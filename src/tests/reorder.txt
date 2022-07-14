@@ -1,0 +1,29 @@
+import { readFileIntoDB } from "../pre/preproc.ts";
+import { worker, utils } from "../db/worker.ts";
+import { Context } from "../types/types.ts";
+const filename = "src/final_sentences_eo.txt";
+(async () => {
+	const db = await readFileIntoDB(filename);
+	const ctxs = Object.values(db.contexts).map((v) => ({
+		["all"]: new Set(v.concepts),
+        ["unknowns"]: new Set(v.concepts),
+        ["id"]: v.metadata.id
+	}));
+	const freq = utils.createFreqMap(ctxs);
+    Object.entries(freq).forEach((k) => {
+        if (k[1] > 75) {
+            console.log(db.hashes[Number(k[0])], k[1])
+        }
+    })
+    // is it freq map, cardinal?
+    //worker.add(ctxs);
+    
+    const calc = (c: Context) => Array.from(c.all).map((id: number) => freq[id] ? freq[id] : 0).reduce((a, b) => a + b) / c.all.size;
+
+    const sortedCtxs = ctxs.map(c => [c, calc(c)] as [Context, number]);
+    sortedCtxs.sort((a, b) => a[1] - b[1]);
+    console.log("Top!");
+    console.log(sortedCtxs.slice(0, 15).map(e => db.contexts[e[0].id]));
+    console.log("Bottom!")
+    console.log(sortedCtxs.slice(-15).map(e => db.contexts[e[0].id]));
+})();

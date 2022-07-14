@@ -1,0 +1,151 @@
+import * as R from "https://esm.sh/ramda";
+import { AIO } from "../types/purify.ts";
+import { Config } from "../state/Config.ts";
+import { Memory } from "./memory.ts";
+
+export type Hours = number;
+
+export const timestamp = () => {
+	const currTime = new Date().getUTCHours();
+	return AIO.ofS(() => currTime);
+};
+
+export const hoursSince = (lastSeen: Hours) =>
+	timestamp().map((x) => x - lastSeen);
+
+export type u32 = number;
+
+export type Concept = {
+	name: string;
+	id: u32;
+	longevity: Hours;
+	nextReviewDate: Hours;
+	timesSeen: number;
+	lastSeen: Hours;
+};
+
+export const newConcept =
+	(cfg: Config) =>
+	(name: string, id: u32): Concept => ({
+		name,
+		id,
+		longevity: cfg.minimum,
+		nextReviewDate: cfg.currentTime() - cfg.minimum,
+		timesSeen: 0,
+		lastSeen: cfg.currentTime() - cfg.minimum * 3,
+	});
+// init correct multiplier as overarching fn
+// multiplier = 3.5, minimum = 0.1
+// last seen???
+// current algorithm will always prioritise the newest word
+export const Calculate =
+	({ currentTime, multiplier, minimum }: Config) =>
+	(c: Concept) => {
+		const elapsedSinceLastSeen = currentTime() - c.lastSeen;
+		const newLongevityBase = Math.max(c.longevity, elapsedSinceLastSeen);
+		const difference = c.longevity - elapsedSinceLastSeen;
+
+		// where is "now" as a ratio between the last seen time and the next review time?
+		// duration vs position. encodes information about how long it will be retained for, then locates it within time.
+
+		const last = c.lastSeen;
+		const next = c.nextReviewDate;
+		const now = currentTime();
+		// which will give us a ratio of 0 to 1, potentially more if it was reviewed late.
+
+
+		const seen = { timesSeen: c.timesSeen + 1, lastSeen: currentTime() };
+		// below, we instead take the actual elapsed duration
+		// instead of the one the concept is associated with
+		const _markCorrect = () =>
+				({
+						longevity: c.longevity > elapsedSinceLastSeen ? c.longevity + elapsedSinceLastSeen : elapsedSinceLastSeen * multiplier,
+						nextReviewDate:
+							currentTime() + elapsedSinceLastSeen * multiplier,
+				})
+		const _markWrong = () =>
+			laterThanExpected
+				? {
+						longevity: elapsedSinceLastSeen / multiplier,
+						nextReviewDate:
+							currentTime() + (elapsedSinceLastSeen / multiplier),
+				  }
+				: {
+						longevity:
+							elapsedSinceLastSeen / multiplier < minimum
+								? minimum
+								: elapsedSinceLastSeen / multiplier,
+						nextReviewDate:
+							currentTime() +
+							(elapsedSinceLastSeen / multiplier < minimum
+								? minimum
+								: elapsedSinceLastSeen / multiplier),
+				  };
+		const [markCorrect, markWrong] = [_markCorrect, _markWrong].map((fn) =>
+			R.pipe(fn, (d) => {
+				return { ...c, ...seen, ...d };
+			})
+		);
+		return { markCorrect, markWrong };
+	};
+
+export const validateRange = (min: number, max: number) => (n: number) => {
+	if (n < min || n > max) {
+		throw new Error(
+			`The number provided (${n}) was out of range of (${min}, ${max})`
+		);
+	}
+};
+
+export const markFuzzy = (fnTree: {
+	markCorrect: () => Concept;
+	markWrong: () => Concept;
+}) => {
+	return (score: number): Concept => {
+		validateRange(0, 1)(score);
+		const correct = fnTree.markCorrect();
+		const wrong = fnTree.markWrong();
+		const weightForCorrect = score;
+		const weightForWrong = 1 - score;
+		return {
+			...correct,
+			longevity:
+				correct.longevity * weightForCorrect +
+				wrong.longevity * weightForWrong,
+			nextReviewDate:
+				correct.nextReviewDate * weightForCorrect +
+				wrong.nextReviewDate * weightForWrong,
+		};
+	};
+};
+
+export const markKnown =
+	({ currentTime }: { currentTime: () => Hours }) =>
+	(concept: Concept): Concept => {
+		return {
+			...concept,
+			longevity: 1000,
+			nextReviewDate: currentTime() + 1000,
+			timesSeen: 30,
+		};
+	};
+// btwn 0 and 1
+
+// todo: averages
+// todo: refactoring to reduce redundancy, express more declaratively
+// todo: the longevity needs to be expressed as a logarithm??? possibly in base 3.5 whatever. this is so the futurity-maximisation algorithm won't prioritise things that are already known?
+// or alternatively, the futurity algorithm could just scale everything logarithmically. yeah do this. try both.
+
+export interface Context<T> {
+	metadata: T;
+	concepts: Array<u32>;
+}
+export type DefaultMeta = {
+	id: number;
+	words: string[];
+	original: string;
+	translation: string;
+};
+export type DefCtx = Context<DefaultMeta>;
+
+// Methods should be immutable i.e they return a closure that creates a new concept and performs the action rather than directly mutating the object. This allows for simulations to be applied over the context_db (i.e if the user gets it right, do this, wrong, do this, learned, show this, etc.)
