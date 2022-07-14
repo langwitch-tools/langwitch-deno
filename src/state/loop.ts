@@ -292,7 +292,7 @@ const main =
 						? DoNothing
 						: cfg.getInputFn("Press enter to continue")
 				)
-				.and((finalState) => plog.log(viewDebug(finalState)))
+				//.and((finalState) => plog.log(viewDebug(finalState)))
 				.fmap((finalState) => main(cfg)(finalState))
 		);
 	};
