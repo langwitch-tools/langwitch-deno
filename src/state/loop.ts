@@ -309,7 +309,7 @@ const main =
 	//stderr: "piped" });
 //})()
 export const mainIO = (cfg: Config) =>
-	fromFile(cfg)(Deno.args[0], null)
+	fromFile(cfg)(Deno.args[0], Deno.args[1])
 		.map((s) => initialise(cfg)(s))
 		.map((s) => updateTopContext(cfg)(s))
 		.fmap(main(cfg));
