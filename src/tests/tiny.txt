@@ -1,0 +1,59 @@
+import { DefCtx } from "../frontend/concept.ts";
+import { readFileIntoDB } from "../pre/preproc.ts";
+import { Context } from "../types/types.ts";
+
+const counter = <T>(map: Map<T, number> = new Map()) => (items: Array<T>) => {
+	items.forEach((i) => {
+		const curr = map.get(i) || 0;
+		map.set(i, curr + 1);
+	});
+	return map;
+};
+
+const ofLen =
+	<T>(lengthFn: (a0: T) => number) =>
+	(amnt: number) =>
+	(items: Array<T>) =>
+		items.filter((i) => lengthFn(i) == amnt);
+
+const sortByFreq =
+	<T, K>(getItems: (a0: T) => Array<K>) =>
+	(map: Map<K, number>) =>
+	(items: Array<T>) => {
+		const score = (item: T) =>
+			getItems(item)
+				.map((i) => map.get(i) || 0)
+				.reduce((a, b) => a + b) / getItems(item).length;
+		return [...items].sort((a, b) => score(b) - score(a));
+	};
+
+const log = <A, B>(fn: (a: A) => B) => (a: A) => {
+    console.log(a);
+    const result = fn(a);
+    console.log(result);
+    return result;
+}
+
+const test2 = async () => {
+    const db = await readFile("src/final_sentences_eo.txt");
+    const ctxs = Object.values(db.contexts);
+    const min = () => ctxs.map(c => c.concepts.length).sort();
+    for (let i = 0; i < 100; i++) {
+        const mins = min();
+        const n1Count = mins.find(v => v != 0)!;
+        const n2Count = mins.find(v => v > n1Count)!;
+        const n1 = ofLen<DefCtx>(c => c.concepts.length)(n1Count)(ctxs);
+        const n2 = ofLen<DefCtx>(c => c.concepts.length)(n2Count)(ctxs);
+        let map = counter<number>()(n2.map(c => c.concepts).flat());
+        //console.log(map);
+        const sorted = sortByFreq<DefCtx, number>(c => c.concepts)(map)(n1);
+        const best = new Set(sorted[0].concepts);
+        console.log(sorted[0].metadata.words);
+        //console.log(Array.from(best).map(i => db.hashes[i]))
+        ctxs.forEach(c => {
+            c.concepts = c.concepts.filter(i => !best.has(i));
+        });
+    }
+}
+
+test2();

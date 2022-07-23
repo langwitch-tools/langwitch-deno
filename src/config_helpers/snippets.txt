@@ -1,0 +1,12 @@
+			const additionalEffect = (async () => {
+				if (cfg.save_it_to_avoid_downloading_again) {
+					const localFile = await Deno.open(
+						cfg.save_it_to_avoid_downloading_again.where
+					);
+					const wtr = new BufWriter(localFile);
+					const encoder = new TextEncoder();
+					return (line: string) => wtr.write(encoder.encode(line));
+				} else {
+					return (_: string) => {};
+				}
+			})();
