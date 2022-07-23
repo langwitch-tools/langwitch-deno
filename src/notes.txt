@@ -1,4 +1,0 @@
-- I know these words, given this corpus, what should I learn next?
-- Out of these sentences in the corpus, if I know X words, and I am focused on learning Y group of words, which should I learn?
-
-- take the joint set of words on either side (english & flemish), ranked by frequency, add them to known. add the pairs featuring all of the new words to the "good" list (i.e if there was "dog" and "mog", you only select sentences with dog on one side and mog on the other). repeat
