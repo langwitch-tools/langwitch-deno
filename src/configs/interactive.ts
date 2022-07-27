@@ -87,10 +87,11 @@ if (selections.shouldSave) {
 		(prev, curr) => prev.replaceAll("@" + curr, `${replacements[curr]}`),
 		template
 	);
+	const name = `${selections.langCode.split(" -> ")[1]}_langwitch.config.ts`;
 	Deno.writeTextFile(
-		`${selections.langCode.split(" -> ")[1]}_langwitch.config.ts`,
+		name,
 		newTemplate
-	);
+	).then(() => Deno.run({cmd: ["chmod", "+x", name], stdout: "null", stderr: "null"}));
 }
 
 const config = ({
