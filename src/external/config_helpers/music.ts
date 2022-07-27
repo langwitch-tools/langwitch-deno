@@ -1,0 +1,1 @@
+export default ["mpv", "https://youtu.be/Bh-XfNbp7x8", "https://youtu.be/Wx26ZsQOino", "https://youtu.be/aROPFI5nvsY", "https://youtu.be/UYllsF9rXZE", "--loop-playlist", "--no-video", "--volume=70"]
