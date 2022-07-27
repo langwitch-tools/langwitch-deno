@@ -57,14 +57,7 @@ export class AIO<T> {
 		return AIO.ofA(async () => {
 			const r = await this.run();
 			const intermediateTask = await stuff(r);
-			await intermediateTask.map(_p => {
-				Deno.addSignalListener("SIGINT", () => {
-					throw new Error()
-				});
-				Deno.addSignalListener("SIGTERM", () => {
-					throw new Error()
-				});
-			}).run();
+			await intermediateTask.run();
 			return r;
 		});
 	}
