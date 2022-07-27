@@ -374,9 +374,7 @@ export const consoleHandlers = <A>(cfg: () => Config<A>): CommandHandlers => ({
 		return newState;
 	},
 	exit: <T>(s: State<T>): AIO<never> => {
-		const json = save(s.db);
-		return ask("Where would you like me to save to?")
-			.fmap((filename) => pfs.writeFile(filename, json))
+		return ask("cya!")
 			.fmap(() => Deno.exit());
 	},
 });
