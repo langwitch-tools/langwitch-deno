@@ -1,5 +1,5 @@
-import { start } from "../../external/config_helpers/start_session.ts";
-import { ExternalConfig } from "../../external/config_helpers/ExternalConfig.ts";
+import { start } from "https://raw.githubusercontent.com/langwitch-tools/langwitch-deno/main/src/external/config_helpers/start_session.ts";
+import { ExternalConfig } from "https://github.com/langwitch-tools/langwitch-deno/raw/main/src/external/config_helpers/ExternalConfig.ts";
 import { translit } from "https://archive.org/download/ii_20220728/translit/mod.ts"; 
 
 const transliterator = await translit("yi").then(m => m.transliterate);
