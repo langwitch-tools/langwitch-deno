@@ -1,6 +1,6 @@
-import { start } from "https://raw.githubusercontent.com/langwitch-tools/langwitch-deno/main/src/external/config_helpers/start_session.ts";
+import { start } from "https://github.com/langwitch-tools/langwitch-deno/raw/main/src/external/config_helpers/start_session.ts";
 import { ExternalConfig } from "https://github.com/langwitch-tools/langwitch-deno/raw/main/src/external/config_helpers/ExternalConfig.ts";
-import { makeTTS } from "https://raw.githubusercontent.com/langwitch-tools/langwitch-deno/main/src/external/config_helpers/speech.ts";
+import { makeTTS } from "https://github.com/langwitch-tools/langwitch-deno/raw/main/src/external/config_helpers/speech.ts";
 import { cut } from "https://deno.land/x/jieba@v1.0.0/mod.ts";
 import pinyin from "https://deno.land/x/pinyin/mod.ts";
 
