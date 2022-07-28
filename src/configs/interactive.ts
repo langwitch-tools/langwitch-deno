@@ -91,7 +91,7 @@ if (selections.shouldSave) {
 	Deno.writeTextFile(
 		name,
 		newTemplate
-	).then(() => Deno.run({cmd: ["chmod", "+x", name], stdout: "null", stderr: "null"}));
+	);
 }
 
 const config = ({
