@@ -1,6 +1,5 @@
 import { start } from "../external/config_helpers/start_session.ts";
 import { makeTTS } from "../external/config_helpers/speech.ts";
-import { cut } from "https://deno.land/x/jieba@v1.0.0/mod.ts";
 import pinyin from "https://deno.land/x/pinyin/mod.ts";
 
 const numbers = ["1", "2", "3", "4", "x", "z", "i", "h", "u", "a", "d"];
@@ -48,7 +47,7 @@ const config = {
 
 	music: false,
 
-	preprocessor: cut,
+	preprocessor: (s: string) => s.split(""),
 };
 
 start(config).run();
