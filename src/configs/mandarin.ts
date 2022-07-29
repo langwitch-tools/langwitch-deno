@@ -21,13 +21,7 @@ const config = {
 		{
 			url: `https://archive.org/download/langwitch_shortened/shortened_zh-CN.txt`,
 			total: 50000,
-		},
-		{
-			opus: "https://object.pouta.csc.fi/OPUS-TED2013/v1.1/tmx/en-zh.tmx.gz",
-			total: 80000,
-			portion_to_keep: 0.6,
-			chunk_size: 30,
-		},
+		}
 	],
 
 	show_progress_bar: true,
