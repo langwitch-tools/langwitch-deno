@@ -10,7 +10,7 @@ const transliterator = (text: string) =>
 				style: pinyin.STYLE_TONE2, // Setting pinyin style.
 				segment: true,
 				group: true,
-		  });
+		  }).join(" ");
 
 const config = {
 	language: "Mandarin",
