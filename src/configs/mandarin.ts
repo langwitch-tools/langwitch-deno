@@ -47,7 +47,7 @@ const config = {
 
 	music: false,
 
-	preprocessor: (s: string) => s.split(""),
+	preprocessor: (s: string) => s.split("").join(" "),
 };
 
 start(config).run();
