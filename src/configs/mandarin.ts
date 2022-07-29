@@ -1,6 +1,5 @@
-import { start } from "https://cdn.jsdelivr.net/gh/src/external/config_helpers/start_session.ts";
-import { ExternalConfig } from "https://cdn.jsdelivr.net/gh/src/external/config_helpers/ExternalConfig.ts";
-import { makeTTS } from "https://cdn.jsdelivr.net/gh/src/external/config_helpers/speech.ts";
+import { start } from "../../external/config_helpers/start_session.ts";
+import { makeTTS } from "../../external/config_helpers/speech.ts";
 import { cut } from "https://deno.land/x/jieba@v1.0.0/mod.ts";
 import pinyin from "https://deno.land/x/pinyin/mod.ts";
 
