@@ -110,7 +110,7 @@ const config = ({
 
 		get_sentences_from: [
 			{
-				url: `https://github.com/langwitch-tools/langwitch-deno/raw/main/minified_1000/${code}`,
+				url: `https://archive.org/download/langwitch-first-2000/minified_2000/${code}`,
 				total: 120000,
 			},
 			//{ url: "https://github.com/langwitch-resources/langwitch-sentence-packs/blob/main/mon-mongolian-mongol/statmt/mn.tsv?raw=true", total: 200000}
