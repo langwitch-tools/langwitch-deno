@@ -58,7 +58,7 @@ export const awaitAnswer = async ({
 						.map(async (fn) => (await Promise.all(prompt.ctxs.map(e => e.metadata.original).map(fn)))[0])
 						.getOrElse(() => prompt.ctxs[0].metadata.original)
 				),
-			"color: blue; font-weight: bold"
+			"color: yellow; font-weight: bold"
 		),
 		linebreak(),
 		prompt.newWord !== undefined &&
@@ -119,10 +119,10 @@ export const displayResults = async ({
 		clear(),
 		displayStats(stats),
 		linebreak(),
-		plog.log("%c(„ᵕᴗᵕ„) your guess:", "color: cyan"),
+		plog.log("%c(„ᵕᴗᵕ„) your guess:", "color: yellow"),
 		green.$(b).log(" " + results.userAnswer),
 		linebreak(),
-		plog.log("%c(❀ˆᴗˆ) my guess:", "color: cyan"),
+		plog.log("%c(❀ˆᴗˆ) my guess:", "color: yellow"),
 		green
 			.$(b)
 			.log(
